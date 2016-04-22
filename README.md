@@ -191,3 +191,13 @@ spark-submit \
   --output-compression none \
   --output-serialization text
 ```
+
+
+## Using Maven
+```vim
+<dependency>
+  <groupId>com.github.KeithSSmith</groupId>
+  <artifactId>spark-compaction</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
