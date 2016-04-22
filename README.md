@@ -193,11 +193,23 @@ spark-submit \
 ```
 
 
-## Using Maven
+##Dependencies
+### Maven
 ```vim
 <dependency>
   <groupId>com.github.KeithSSmith</groupId>
   <artifactId>spark-compaction</artifactId>
   <version>1.0.0</version>
 </dependency>
+```
+
+### Spark Shell Packages
+When initializing the Spark session from the command line it is possible to pass packages from the bash scripts included in the Spark deployment (spark-shell or spark-submit).
+
+```vim
+$ bin/spark-shell --packages com.github.KeithSSmith:spark-compaction:1.0.0
+
+or
+
+$ bin/spark-submit --packages com.github.KeithSSmith:spark-compaction:1.0.0
 ```
