@@ -50,7 +50,7 @@ Output Files: FLOOR( x / (r * y) ) + 1 = # of Mappers
 
 ```vim
 spark-submit \
-  --class com.cloudera.spark_compaction.Compact \
+  --class com.github.KeithSSmith.spark_compaction.Compact \
   --master local[2] \
   ${JAR_PATH}/spark-compaction-0.0.1-SNAPSHOT.jar \
   --input-path ${INPUT_PATH} \
@@ -61,11 +61,13 @@ spark-submit \
   --output-serialization [text parquet avro]
 ```
 
+It is not required to pass the last four variables as it will be inferred from the input path by using the same input options for the output options.  It should also be noted that if Avro is used as the output serialization only uncompressed and snappy compression are supported in the upstream package (spark-avro by Databricks) and the compression type will not be passed as part of the output file name.  The other option that is not supported is Parquet + BZ2 and that will result in an execution error.
+ 
 **Execution Example (Text to Text):**
 
 ```vim
 spark-submit \
-  --class com.cloudera.spark_compaction.Compact \
+  --class com.github.KeithSSmith.spark_compaction.Compact \
   --master local[2] \
   ${JAR_PATH}/spark-compaction-0.0.1-SNAPSHOT.jar \
   -i ${INPUT_PATH} \
@@ -76,15 +78,22 @@ spark-submit \
   -os [output_serialization]
 
 spark-submit \
-  --class com.cloudera.spark_compaction.Compact \
+  --class com.github.KeithSSmith.spark_compaction.Compact \
   --master local[2] \
   ~/cloudera/jars/spark-compaction-0.0.1-SNAPSHOT.jar \
-  -i /landing/compaction/input \
-  -o /landing/compaction/output \
+  -i hdfs:///landing/compaction/input \
+  -o hdfs:///landing/compaction/output \
   -ic none \
   -is text \
   -oc none \
   -os text
+
+spark-submit \
+  --class com.github.KeithSSmith.spark_compaction.Compact \
+  --master local[2] \
+  ~/cloudera/jars/spark-compaction-0.0.1-SNAPSHOT.jar \
+  -i hdfs:///landing/compaction/input \
+  -o hdfs:///landing/compaction/output
 ```
 
 To elaborate further, the following example has an input directory consisting of 9,999 files consuming 440 MB of space.  Using the default block size, the resulting output files are 146 MB in size, easily fitting into a data block.
@@ -172,11 +181,11 @@ $ hdfs dfs -du -h /landing/compaction/partition/output_2016-01-01/* | wc -l
 **Wildcard for Multiple Sub Directory Compaction**
 ```vim
 spark-submit \
-  --class com.cloudera.spark_compaction.Compact \
+  --class com.github.KeithSSmith.spark_compaction.Compact \
   --master local[2] \
   ~/cloudera/jars/spark-compaction-0.0.1-SNAPSHOT.jar \
-  --input-path /landing/compaction/partition/date=2016-01-01/hour=* \
-  --output-path /landing/compaction/partition/output_2016-01-01 \
+  --input-path hdfs:///landing/compaction/partition/date=2016-01-01/hour=* \
+  --output-path hdfs:///landing/compaction/partition/output_2016-01-01 \
   --input-compression none \
   --input-serialization text \
   --output-compression none \
